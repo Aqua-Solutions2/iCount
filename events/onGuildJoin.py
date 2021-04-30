@@ -26,6 +26,8 @@ class EventsGuildJoin(commands.Cog):
             cursor.execute("DELETE FROM guildData WHERE guild = %s", (guild.id,))
             cursor.execute("DELETE FROM guildModules WHERE guild = %s", (guild.id,))
             cursor.execute("DELETE FROM userData WHERE guild = %s", (guild.id,))
+            cursor.execute("DELETE FROM userNotify WHERE guild = %s", (guild.id,))
+            cursor.execute("DELETE FROM userAutomation WHERE guild = %s", (guild.id,))
             db.commit()
 
             cursor.execute(settings.insert_guildsettings, (f"{guild.id}", f"{settings.default_prefix}", 0, -1, 0, 0, "en"))

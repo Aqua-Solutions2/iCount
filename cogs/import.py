@@ -5,7 +5,6 @@ import mysql.connector
 import json
 import os
 from virustotal_python import Virustotal
-from pprint import pprint
 
 
 class CogsImport(commands.Cog):
@@ -42,8 +41,6 @@ class CogsImport(commands.Cog):
 
         with Virustotal(API_KEY=settings.vtotal_api_key, API_VERSION="v3") as vtotal:
             return_data = vtotal.request("files", files=bestand, method="POST")
-
-        pprint(return_data.data)
 
         return
 

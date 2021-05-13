@@ -17,7 +17,7 @@ class UserInfo(commands.Cog):
                                      passwd=settings.passwd, database=settings.database)
         cursor = db.cursor()
 
-        cursor.execute("SELECT * FROM userData WHERE user = %s AND guild = %s", (member, ctx.guild.id))
+        cursor.execute("SELECT * FROM userData WHERE user = %s AND guild = %s", (member.id, ctx.guild.id))
         user_data = cursor.fetchone()
 
         if user_data is not None:

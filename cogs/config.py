@@ -4,7 +4,7 @@ import settings
 import mysql.connector
 
 
-class Notify(commands.Cog):
+class Config(commands.Cog):
 
     def __init__(self, client):
         self.client = client
@@ -61,4 +61,4 @@ class Notify(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Notify(client))
+    client.add_cog(Config(client))

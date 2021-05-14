@@ -72,7 +72,7 @@ class HelpMsg(commands.Cog):
                             f"\n• **{prefix}ping** - Get the latency and uptime of the bot."
                             f"\n• **{prefix}invite** - Get an invite to add the bot."
                             f"\n• **{prefix}notifications** - Get a list of your notifications in the server."
-                            f"\n• **{prefix}notify [each] <count>** - Get a notification whenever the server reach whatever count you want."
+                            f"\n• **{prefix}notify <count> [--each]** - Get a notification whenever the server reach whatever count you want."
                             f"\n• **{prefix}del-notification <id>** - Remove a notification."
                             f"\n• **{prefix}leaderboard** - Get a leaderboard with members that counted the most."
                             f"\n• **{prefix}userinfo <name>** - See how many times you counted in the server."

@@ -9,7 +9,7 @@ class Notify(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.group()  # aliases=["conf", "settings"]
+    @commands.group(aliases=["conf", "settings"])
     async def config(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(":x: Invalid arguments. Command usage: `config <option> <extra>`.\n\n"

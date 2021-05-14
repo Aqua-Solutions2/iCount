@@ -13,6 +13,9 @@ class Notify(commands.Cog):
     async def notify(self, ctx, number=None, parameter=None):
         try:
             number = int(number)
+
+            if number <= 0:
+                number = int("error")
         except Exception:
             await ctx.send(":x: You didn't give a valid number. `notify <number> [--each]`")
             return
@@ -101,6 +104,9 @@ class Notify(commands.Cog):
         if option != "all":
             try:
                 option = int(option)
+
+                if option <= 0:
+                    option = int("error")
             except ValueError:
                 await ctx.send(":x: You didn't give a valid number. `delnotif <ID | all>`")
                 return
@@ -113,8 +119,14 @@ class Notify(commands.Cog):
             cursor.execute("DELETE FROM userNotify WHERE guild = %s AND user = %s", (ctx.guild.id, ctx.author.id))
             await ctx.send(f":white_check_mark: All notifications have been deleted.")
         else:
-            cursor.execute("DELETE FROM userNotify WHERE guild = %s AND user = %s AND id = %s", (ctx.guild.id, ctx.author.id, option))
-            await ctx.send(f":white_check_mark: Notification `{option}` has been deleted.")
+            cursor.execute("SELECT * FROM userNotify WHERE guild = %s AND user = %s AND id = %s", (ctx.guild.id, ctx.author.id, option))
+            user_notify = cursor.fetchone()
+
+            if user_notify is None:
+                await ctx.send(":x: No notification was found with that ID.")
+            else:
+                cursor.execute("DELETE FROM userNotify WHERE guild = %s AND user = %s AND id = %s", (ctx.guild.id, ctx.author.id, option))
+                await ctx.send(f":white_check_mark: Notification `{option}` has been deleted.")
         db.commit()
         db.close()
 

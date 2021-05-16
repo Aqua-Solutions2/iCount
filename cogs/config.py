@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+import re
 
 
 class Config(commands.Cog):
@@ -15,7 +16,8 @@ class Config(commands.Cog):
             await ctx.send(":x: Invalid arguments. Command usage: `config <option> <extra>`.\n\n"
                            "**Options:**\n"
                            "**1.** `config maxcount <number>`\n"
-                           "**2.** `config timeoutrole <role>`")
+                           "**2.** `config timeoutrole <role>`\n"
+                           "**3.** `config prefix <prefix>`")
 
     @config.command()
     async def maxcount(self, ctx, count=None):
@@ -58,6 +60,31 @@ class Config(commands.Cog):
 
             await ctx.send(f"You've updated the timeout role to **{role.mention}**.")
         db.close()
+
+    @config.command()
+    async def prefix(self, ctx, prefix=None):
+        prefix = prefix or "c!"
+        prefix = str(prefix)
+
+        if len(prefix) > 5:
+            await ctx.send(":x: The prefix cannot be longer than 5 characters.")
+            return
+
+        valid_chars = "`A-Z`, `a-z`, `!`, `<`, `>`, `~`, `.`, `,`, `^`, `-`, `$`, `/`, `%`, `+`, `=`"
+        regex = re.sub(r'[^A-Za-z!~,.<>^/$%=+-]', '', prefix)
+
+        if prefix == regex:
+            db = mysql.connector.connect(host=settings.host, user=settings.user,
+                                         passwd=settings.passwd, database=settings.database)
+            cursor = db.cursor()
+
+            cursor.execute("UPDATE guildSettings SET prefix = %s WHERE guild = %s", (prefix, ctx.guild.id))
+            db.commit()
+            db.close()
+
+            await ctx.send(f"You've updated the prefix to **{prefix}**.")
+        else:
+            await ctx.send(f":x: Prefix contains invalid characters.\nValid characters are:\n{valid_chars}")
 
 
 def setup(client):

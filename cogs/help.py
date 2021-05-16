@@ -31,8 +31,8 @@ class HelpMsg(commands.Cog):
             embed = discord.Embed(
                 description=f"**__Owner Commands__**\n"
                             f"\n• **{prefix}resetall** - Remove all data from the bot in the guild."
-                            f"\n• **{prefix}export <settings | userdata>** - Export all the data into a .JSON file."
-                            f"\n• **{prefix}import <settings | userdata>** - Import all the data from .JSON file."
+                            f"\n• **{prefix}export** - Export all the data into a .JSON file."
+                            f"\n• **{prefix}import** - Import all the data from .JSON file. (upload the file with the command)"
                             f"\n\n**__Staff Commands__**\n"
                             f"\n• **{prefix}setup** - Quickly set up a counting channel."
                             f"\n• **{prefix}link** - Link a counting channel manually."

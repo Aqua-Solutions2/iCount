@@ -5,9 +5,6 @@ from discord.ext import commands
 import settings
 import mysql.connector
 
-intents = discord.Intents.default()
-intents.members = True
-
 
 def get_prefix(client, message):
     db = mysql.connector.connect(
@@ -29,14 +26,22 @@ def get_prefix(client, message):
     return prefix
 
 
-client = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents)
+client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
 client.remove_command("help")
+
+
+def get_members():
+    members = 0
+    for guild in client.guilds:
+        members += len(guild.members)
+
+    return members
 
 
 async def change_status():
     await client.wait_until_ready()
     while client.is_ready():
-        status = discord.Activity(name=f"{settings.default_prefix}help | {len(client.users)} Users", type=discord.ActivityType.watching)
+        status = discord.Activity(name=f"{settings.default_prefix}help | {get_members()} Users", type=discord.ActivityType.watching)
         await client.change_presence(activity=status)
         await asyncio.sleep(300)
 
@@ -45,7 +50,7 @@ async def print_guilds():
     await client.wait_until_ready()
     while client.is_ready():
         print("Guilds:", len(client.guilds))
-        print("Users:", len(client.users))
+        print("Users:", get_members())
         await asyncio.sleep(21600)
 
 

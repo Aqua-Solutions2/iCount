@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import mysql.connector
 import settings
+from discord.utils import get
 
 
 class EventsCounting(commands.Cog):
@@ -30,7 +31,7 @@ class EventsCounting(commands.Cog):
                 return
 
             channel_id = guild_settings[2]
-            # timeoutrole = guild_settings[4]
+            timeoutrole = guild_settings[4]
             maxcount = guild_settings[3]
 
             if message.channel.id == channel_id:
@@ -131,6 +132,16 @@ class EventsCounting(commands.Cog):
                     embed.set_author(name=self.client.user.display_name, icon_url=self.client.user.avatar_url)
                     embed.set_footer(text=settings.footer)
                     await channel.send(embed=embed)
+
+                    try:
+                        if timeoutrole != 0:
+                            role = get(message.guild.roles, id=timeoutrole)
+
+                            if role is not None:
+                                await message.author.add_roles(role)
+                    except discord.errors.Forbidden:
+                        await channel.send(":x: I have no permission to give the user a role.\n"
+                                           "Please make sure I have the Manage roles permission and that my role is above the timeout role.")
             db.close()
 
 

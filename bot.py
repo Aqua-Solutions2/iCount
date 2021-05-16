@@ -58,7 +58,7 @@ for folder in settings.folder_list:
     print(f"[{settings.botname}] ----------------------[ {folder.title()} ]--------------------")
     for filename in os.listdir(f'./{folder}'):
         if filename.endswith('.py'):
-            print(f"[{settings.botname}] {folder.title()}.{filename[:-3]}: OK")
+            print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
             client.load_extension(f'{folder}.{filename[:-3]}')
 
 client.loop.create_task(change_status())

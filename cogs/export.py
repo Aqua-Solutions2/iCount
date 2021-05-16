@@ -13,7 +13,7 @@ class CogsExport(commands.Cog):
 
     @commands.command(aliases=["dump"])
     async def export(self, ctx):
-        if ctx.author.id == ctx.guild.owner.id:
+        if ctx.author.id == ctx.guild.owner_id:
             db = mysql.connector.connect(host=settings.host, database=settings.database,
                                          user=settings.user, passwd=settings.passwd)
             cursor = db.cursor()

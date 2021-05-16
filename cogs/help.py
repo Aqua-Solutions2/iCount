@@ -27,7 +27,7 @@ class HelpMsg(commands.Cog):
 
         db.close()
 
-        if ctx.author.id == ctx.guild.owner.id:
+        if ctx.author.id == ctx.guild.owner_id:
             embed = discord.Embed(
                 description=f"**__Owner Commands__**\n"
                             f"\n• **{prefix}resetall** - Remove all data from the bot in the guild."

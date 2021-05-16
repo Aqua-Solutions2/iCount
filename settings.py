@@ -24,8 +24,6 @@ insert_userdata = "INSERT INTO userData (guild, user, count) VALUES (%s, %s, %s)
 
 # Gevoelige informatie
 
-vtotal_api_key = credentials.vtotal_api_key
-
 host = credentials.host
 user = credentials.user
 database = credentials.database

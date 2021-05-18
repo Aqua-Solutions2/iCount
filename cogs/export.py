@@ -64,7 +64,7 @@ class CogsExport(commands.Cog):
 
             notifications_data = {}
             for notification in user_notify:
-                user_data_dict[f"{notification[0]}"] = {
+                notifications_data[f"{notification[0]}"] = {
                     "user": notification[2],
                     "mode": notification[4],
                     "number": notification[3]
@@ -72,7 +72,7 @@ class CogsExport(commands.Cog):
 
             automation_data = {}
             for automation in guild_automation:
-                user_data_dict[f"{automation[0]}"] = {
+                automation_data[f"{automation[0]}"] = {
                     "trigger": automation[2],
                     "action": automation[3],
                     "extra": automation[4]
@@ -112,6 +112,11 @@ class CogsExport(commands.Cog):
                 await ctx.send(":white_check_mark: Export Data send into you DMs.")
             except discord.errors.Forbidden:
                 await ctx.send(":x: I cannot send a message to you. Please enable private messaging in the privacy settings of this server.")
+
+            try:
+                os.remove(f"data/exportdata/{ctx.guild.id}.json")
+            except Exception:
+                pass
         else:
             await ctx.send(":x: You are not the owner of this guild.")
 

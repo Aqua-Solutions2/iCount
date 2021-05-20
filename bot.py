@@ -36,7 +36,7 @@ async def change_status():
 for folder in settings.folder_list:
     print(f"[{settings.botname}] ----------------------[ {folder.title()} ]--------------------")
     for filename in os.listdir(f'./{folder}'):
-        if filename.endswith('.py'):
+        if filename.endswith('.py') and not filename.startswith('_'):
             print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
             client.load_extension(f'{folder}.{filename[:-3]}')
 

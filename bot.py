@@ -21,7 +21,7 @@ def get_prefix(client, message):
         return prefix_tuple[0]
 
 
-client = commands.Bot(command_prefix=commands.when_mentioned_or(get_prefix), case_insensitive=True)
+client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
 client.remove_command("help")
 client.action_id = 0
 client.msg = "0"

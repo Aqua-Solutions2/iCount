@@ -5,6 +5,9 @@ from discord.ext import commands
 import settings
 import mysql.connector
 
+intents = discord.Intents.default()
+intents.members = True
+
 
 def get_prefix(client, message):
     db = mysql.connector.connect(host=settings.host, user=settings.user,
@@ -21,7 +24,7 @@ def get_prefix(client, message):
         return prefix_tuple[0]
 
 
-client = commands.Bot(command_prefix=get_prefix, case_insensitive=True)
+client = commands.Bot(command_prefix=get_prefix, case_insensitive=True, intents=intents)
 client.remove_command("help")
 client.action_id = 0
 client.msg = "0"

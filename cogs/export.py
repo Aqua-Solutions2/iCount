@@ -75,7 +75,9 @@ class CogsExport(commands.Cog):
                 automation_data[f"{automation[0]}"] = {
                     "trigger": automation[2],
                     "action": automation[3],
-                    "extra": automation[4]
+                    "number": automation[4],
+                    "actionId": automation[5],
+                    "message": automation[6]
                 }
 
             try:

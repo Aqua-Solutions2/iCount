@@ -23,6 +23,8 @@ def get_prefix(client, message):
 
 client = commands.Bot(command_prefix=commands.when_mentioned_or(get_prefix), case_insensitive=True)
 client.remove_command("help")
+client.action_id = 0
+client.msg = "0"
 
 
 async def change_status():
@@ -34,11 +36,13 @@ async def change_status():
 
 
 for folder in settings.folder_list:
-    print(f"[{settings.botname}] ----------------------[ {folder.title()} ]--------------------")
     for filename in os.listdir(f'./{folder}'):
         if filename.endswith('.py') and not filename.startswith('_'):
-            print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
-            client.load_extension(f'{folder}.{filename[:-3]}')
+            try:
+                client.load_extension(f'{folder}.{filename[:-3]}')
+                print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
+            except Exception:
+                print(f"[{settings.botname}] {folder}.{filename[:-3]}: ERROR")
 
 client.loop.create_task(change_status())
 client.run(settings.token)

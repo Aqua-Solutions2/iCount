@@ -24,6 +24,7 @@ class Modules(commands.Cog):
 
         if guild_modules is None:
             guild_modules = (ctx.guild.id, 0, 0, 0, 0, 0)
+            cursor.execute(settings.insert_guildmodules, guild_modules)
 
         if module is None:
             show_modules = True

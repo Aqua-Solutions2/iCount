@@ -7,7 +7,7 @@ cogs_old/
 .git/
 .DS_Store
 .gitattributes
-setup.py
+cogs_old/setup.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

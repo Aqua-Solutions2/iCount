@@ -27,10 +27,10 @@ class ManualSetup(commands.Cog):
             cursor.execute("DELETE FROM guildModules WHERE guild = %s", (ctx.guild.id,))
             cursor.execute("DELETE FROM userData WHERE guild = %s", (ctx.guild.id,))
             cursor.execute("DELETE FROM userNotify WHERE guild = %s", (ctx.guild.id,))
-            cursor.execute("DELETE FROM userAutomation WHERE guild = %s", (ctx.guild.id,))
+            cursor.execute("DELETE FROM guildAutomation WHERE guild = %s", (ctx.guild.id,))
             db.commit()
 
-            cursor.execute(settings.insert_guildsettings, (f"{ctx.guild.id}", f"{settings.default_prefix}", 0, -1, 0, 0))
+            cursor.execute(settings.insert_guildsettings, (ctx.guild.id, f"{settings.default_prefix}", 0, -1, 0, 0, "en"))
             db.commit()
 
             embed = discord.Embed(

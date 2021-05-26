@@ -4,6 +4,7 @@ from discord.ext import commands
 import settings
 import mysql.connector
 from discord.utils import get
+from core._errors import Error
 
 """
 Events:
@@ -38,6 +39,7 @@ class Automation(commands.Cog):
         return self.events_list[index].replace('X', f'{number}')
 
     @commands.group(aliases=["am", "autom"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def automation(self, ctx):
         if ctx.invoked_subcommand is None:
             events = ""
@@ -66,6 +68,7 @@ class Automation(commands.Cog):
                                                    "`am list` - *Get a list of all automations.*", inline=False)
             embed.set_footer(text=settings.footer)
             await ctx.send(embed=embed)
+            ctx.command.reset_cooldown(ctx)
 
     @automation.command()
     async def create(self, ctx, event=0, action=0, number=0):
@@ -280,6 +283,11 @@ class Automation(commands.Cog):
         )
         embed.set_footer(text=settings.footer)
         await ctx.send(embed=embed)
+
+    @automation.error()
+    async def automation_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

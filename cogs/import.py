@@ -3,6 +3,7 @@ import settings
 import mysql.connector
 import json
 from core import _checks as checks
+from core._errors import Error
 
 
 class CogsImport(commands.Cog):
@@ -11,14 +12,17 @@ class CogsImport(commands.Cog):
         self.client = client
 
     @commands.command(name="import")
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def import_cmd(self, ctx):
         if ctx.author.id == ctx.guild.owner_id:
             if str(ctx.message.attachments) == "[]":
                 await ctx.send(":x: You have to upload a file (.json) to this command.")
+                ctx.command.reset_cooldown(ctx)
                 return
 
             if ctx.message.attachments[0].size > 25000:
                 await ctx.send(":x: The file is larger than 25kb, we do not allow files bigger than 25kb.")
+                ctx.command.reset_cooldown(ctx)
                 return
 
             split_filename = str(ctx.message.attachments).split("filename='")[1]
@@ -28,10 +32,12 @@ class CogsImport(commands.Cog):
                 import_bestand = await ctx.message.attachments[0].read()
             else:
                 await ctx.send(":x: The file needs to have the extension `.json`. Other filetypes are not supported.")
+                ctx.command.reset_cooldown(ctx)
                 return
 
             if not str(import_bestand).startswith("b'{"):
                 await ctx.send(":x: Invalid JSON-file.")
+                ctx.command.reset_cooldown(ctx)
                 return
 
             data = json.loads(import_bestand)
@@ -140,6 +146,11 @@ class CogsImport(commands.Cog):
             await ctx.send(":white_check_mark: Imported all data.\n"
                            "*Some settings/data might not be imported correctly if you changed the file manually.*")
             db.close()
+
+    @import_cmd.error()
+    async def import_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class Modules(commands.Cog):
@@ -10,6 +11,7 @@ class Modules(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["modules"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def module(self, ctx, module=None, state=None):
         show_modules = False
         modules_list = ["allow-spam", "count-fail", "emote-react", "recover", "embed"]
@@ -84,6 +86,11 @@ class Modules(commands.Cog):
             embed.set_footer(text=settings.footer)
             await ctx.send(embed=embed)
         db.close()
+
+    @module.error()
+    async def module_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

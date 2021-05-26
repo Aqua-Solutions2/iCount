@@ -1,6 +1,7 @@
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class SetCount(commands.Cog):
@@ -10,6 +11,7 @@ class SetCount(commands.Cog):
 
     @commands.command(aliases=["set-count"])
     @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def setcount(self, ctx, count=None):
         db = mysql.connector.connect(host=settings.host, database=settings.database,
                                      user=settings.user, passwd=settings.passwd)
@@ -48,12 +50,10 @@ class SetCount(commands.Cog):
 
         db.close()
 
-    @setcount.error
+    @setcount.error()
     async def setcount_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have enough permissions. You need at least `Manage Server` to use this command.")
-        else:
-            raise error
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

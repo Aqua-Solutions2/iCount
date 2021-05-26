@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class HelpMsg(commands.Cog):
@@ -11,6 +12,7 @@ class HelpMsg(commands.Cog):
 
     @commands.command(name="help")
     @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def helpcmd(self, ctx):
         db = mysql.connector.connect(host=settings.host, database=settings.database,
                                      user=settings.user, passwd=settings.passwd)
@@ -117,7 +119,8 @@ class HelpMsg(commands.Cog):
             embed.set_footer(text=settings.footer)
             await ctx.send(embed=embed)
         else:
-            raise error
+            error_class = Error(ctx, error, self.client)
+            await error_class.error_check()
 
 
 def setup(client):

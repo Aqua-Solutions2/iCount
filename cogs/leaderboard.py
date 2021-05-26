@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class Leaderboard(commands.Cog):
@@ -10,6 +11,7 @@ class Leaderboard(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["lb", "scoreboard", "top", "sb"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def leaderboard(self, ctx, page: int = 1):
         pre_offset = page - 1
         offset = pre_offset * 10
@@ -48,6 +50,11 @@ class Leaderboard(commands.Cog):
         embed.set_author(name=f"{ctx.guild} Scoreboard", icon_url=f"{ctx.guild.icon_url}")
         embed.set_footer(text=f"{settings.footer} | Page {page}")
         await ctx.send(embed=embed)
+
+    @leaderboard.error()
+    async def leaderboard_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

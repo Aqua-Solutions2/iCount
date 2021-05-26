@@ -3,6 +3,7 @@ from discord.ext import commands
 import settings
 import mysql.connector
 import re
+from core._errors import Error
 
 
 class Config(commands.Cog):
@@ -11,6 +12,7 @@ class Config(commands.Cog):
         self.client = client
 
     @commands.group(aliases=["conf", "settings"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def config(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(":x: Invalid arguments. Command usage: `config <option> <extra>`.\n\n"
@@ -18,6 +20,7 @@ class Config(commands.Cog):
                            "**1.** `config maxcount <number>`\n"
                            "**2.** `config timeoutrole <role>`\n"
                            "**3.** `config prefix <prefix>`")
+            ctx.command.reset_cooldown(ctx)
 
     @config.command()
     async def maxcount(self, ctx, count=None):
@@ -85,6 +88,11 @@ class Config(commands.Cog):
             await ctx.send(f"You've updated the prefix to **{prefix}**.")
         else:
             await ctx.send(f":x: Prefix contains invalid characters.\nValid characters are:\n{valid_chars}")
+
+    @config.error()
+    async def config_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

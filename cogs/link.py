@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import mysql.connector
 import settings
+from core._errors import Error
 
 
 class UnlinkCmd(commands.Cog):
@@ -11,6 +12,7 @@ class UnlinkCmd(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(1, 10, commands.BucketType.user)
     async def link(self, ctx):
         db = mysql.connector.connect(host=settings.host, user=settings.user,
                                      passwd=settings.passwd, database=settings.database)
@@ -32,6 +34,7 @@ class UnlinkCmd(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(manage_guild=True)
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def unlink(self, ctx):
         db = mysql.connector.connect(host=settings.host, user=settings.user,
                                      passwd=settings.passwd, database=settings.database)
@@ -40,29 +43,15 @@ class UnlinkCmd(commands.Cog):
         cursor.execute("UPDATE guildSettings SET channelId = 0 WHERE guild = %s", (ctx.guild.id,))
         cursor.execute("DELETE FROM guildData WHERE guild = %s", (ctx.guild.id,))
         db.commit()
-
         db.close()
 
         await ctx.send(":white_check_mark: Unlink Successful.")
 
     @link.error
-    async def link_error(self, ctx, error):
-        error = getattr(error, "original", error)
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have enough permissions. You need to have the **MANAGE SERVER** permission to use this command.")
-        elif isinstance(error, discord.Forbidden):
-            await ctx.send("The bot has not enough permissions. Try giving the bot Administrator Permissions to run the setup command. Then you can remove those permissions.\n"
-                           "If you don't want that, just make sure the bot has the permission **Manage Permissions** in the counting channel.\n"
-                           "After that, run the ` c!setup ` command in the same channel.")
-        else:
-            raise error
-
     @unlink.error
-    async def unlink_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You don't have enough permissions. You need to have the **MANAGE SERVER** permission to use this command.")
-        else:
-            raise error
+    async def link_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

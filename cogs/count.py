@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class CurrentCount(commands.Cog):
@@ -10,6 +11,7 @@ class CurrentCount(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["currentcount"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def count(self, ctx):
         guild = ctx.guild.id
         db = mysql.connector.connect(host=settings.host, user=settings.user,
@@ -35,6 +37,11 @@ class CurrentCount(commands.Cog):
         embed.set_footer(text=settings.footer)
         await ctx.send(embed=embed)
         db.close()
+
+    @count.error()
+    async def count_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

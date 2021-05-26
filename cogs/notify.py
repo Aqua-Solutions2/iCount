@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class Notify(commands.Cog):
@@ -10,6 +11,7 @@ class Notify(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["notifyme", "alert", "alertme"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def notify(self, ctx, number=None, parameter=None):
         try:
             number = int(number)
@@ -66,6 +68,7 @@ class Notify(commands.Cog):
         await ctx.send(":white_check_mark: The notification has been enabled.")
 
     @commands.command(aliases=["notif", "alerts", "notiflist", "alertslist"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def notifications(self, ctx):
         desc = ""
         number = 1
@@ -100,6 +103,7 @@ class Notify(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.command(aliases=["removenotif", "delalert", "removealert"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def delnotif(self, ctx, option=None):
         if option != "all":
             try:
@@ -129,6 +133,13 @@ class Notify(commands.Cog):
                 await ctx.send(f":white_check_mark: Notification `{option}` has been deleted.")
         db.commit()
         db.close()
+
+    @notify.error()
+    @notifications.error()
+    @delnotif.error()
+    async def notif_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

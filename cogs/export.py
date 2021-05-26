@@ -4,6 +4,7 @@ import settings
 import mysql.connector
 import json
 import os
+from core._errors import Error
 
 
 class CogsExport(commands.Cog):
@@ -12,6 +13,7 @@ class CogsExport(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["dump"])
+    @commands.cooldown(1, 300, commands.BucketType.user)
     async def export(self, ctx):
         if ctx.author.id == ctx.guild.owner_id:
             db = mysql.connector.connect(host=settings.host, database=settings.database,
@@ -114,6 +116,7 @@ class CogsExport(commands.Cog):
                 await ctx.send(":white_check_mark: Export Data send into you DMs.")
             except discord.errors.Forbidden:
                 await ctx.send(":x: I cannot send a message to you. Please enable private messaging in the privacy settings of this server.")
+                ctx.command.reset_cooldown(ctx)
 
             try:
                 os.remove(f"data/exportdata/{ctx.guild.id}.json")
@@ -121,6 +124,12 @@ class CogsExport(commands.Cog):
                 pass
         else:
             await ctx.send(":x: You are not the owner of this guild.")
+            ctx.command.reset_cooldown(ctx)
+
+    @export.error()
+    async def export_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

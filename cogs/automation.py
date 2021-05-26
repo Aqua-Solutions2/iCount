@@ -57,9 +57,12 @@ class Automation(commands.Cog):
             )
             embed.add_field(name="Events", value=events, inline=False)
             embed.add_field(name="Actions", value=actions, inline=False)
+            embed.add_field(name="Command Usage", value="`am create <event> <action> <number>`\n"
+                                                        "`am delete <id>`\n"
+                                                        "`am list`", inline=False)
             embed.add_field(name="Examples", value="`am create 1 1 10` - *Give a role when a user reaches number 10. (You can choose the role after you run the command.)*\n"
                                                    "`am create 4 3 69` - *Pin message when count ends with 69.*\n"
-                                                   "`am delete 99` - *Delete automation with id 99.*"
+                                                   "`am delete 99` - *Delete automation with id 99.*\n"
                                                    "`am list` - *Get a list of all automations.*", inline=False)
             embed.set_footer(text=settings.footer)
             await ctx.send(embed=embed)

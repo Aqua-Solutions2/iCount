@@ -50,7 +50,7 @@ class SetCount(commands.Cog):
 
         db.close()
 
-    @setcount.error()
+    @setcount.error
     async def setcount_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

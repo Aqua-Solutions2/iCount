@@ -38,7 +38,7 @@ class CurrentCount(commands.Cog):
         await ctx.send(embed=embed)
         db.close()
 
-    @count.error()
+    @count.error
     async def count_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

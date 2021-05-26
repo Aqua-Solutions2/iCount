@@ -44,8 +44,11 @@ for folder in settings.folder_list:
             try:
                 client.load_extension(f'{folder}.{filename[:-3]}')
                 print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
-            except Exception:
-                print(f"[{settings.botname}] {folder}.{filename[:-3]}: ERROR")
+            except Exception as e:
+                if filename == "config.py":
+                    raise e
+                else:
+                    print(f"[{settings.botname}] {folder}.{filename[:-3]}: ERROR")
 
 client.loop.create_task(change_status())
 client.run(settings.token)

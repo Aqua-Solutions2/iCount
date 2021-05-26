@@ -87,7 +87,7 @@ class Modules(commands.Cog):
             await ctx.send(embed=embed)
         db.close()
 
-    @module.error()
+    @module.error
     async def module_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

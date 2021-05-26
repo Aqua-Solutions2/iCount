@@ -126,7 +126,7 @@ class CogsExport(commands.Cog):
             await ctx.send(":x: You are not the owner of this guild.")
             ctx.command.reset_cooldown(ctx)
 
-    @export.error()
+    @export.error
     async def export_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

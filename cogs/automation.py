@@ -284,7 +284,7 @@ class Automation(commands.Cog):
         embed.set_footer(text=settings.footer)
         await ctx.send(embed=embed)
 
-    @automation.error()
+    @automation.error
     async def automation_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

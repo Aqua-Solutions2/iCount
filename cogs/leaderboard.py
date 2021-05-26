@@ -51,7 +51,7 @@ class Leaderboard(commands.Cog):
         embed.set_footer(text=f"{settings.footer} | Page {page}")
         await ctx.send(embed=embed)
 
-    @leaderboard.error()
+    @leaderboard.error
     async def leaderboard_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

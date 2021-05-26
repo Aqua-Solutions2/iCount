@@ -134,9 +134,9 @@ class Notify(commands.Cog):
         db.commit()
         db.close()
 
-    @notify.error()
-    @notifications.error()
-    @delnotif.error()
+    @notify.error
+    @notifications.error
+    @delnotif.error
     async def notif_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

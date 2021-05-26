@@ -147,7 +147,7 @@ class CogsImport(commands.Cog):
                            "*Some settings/data might not be imported correctly if you changed the file manually.*")
             db.close()
 
-    @import_cmd.error()
+    @import_cmd.error
     async def import_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

@@ -89,7 +89,7 @@ class Config(commands.Cog):
         else:
             await ctx.send(f":x: Prefix contains invalid characters.\nValid characters are:\n{valid_chars}")
 
-    @config.error()
+    @config.error
     async def config_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

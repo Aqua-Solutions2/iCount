@@ -49,7 +49,7 @@ class ResetData(commands.Cog):
             await ctx.send(embed=embed)
             db.close()
 
-    @resetall.error()
+    @resetall.error
     async def resetall_error(self, ctx, error):
         error_class = Error(ctx, error, self.client)
         await error_class.error_check()

@@ -38,6 +38,7 @@ class EventsCounting(commands.Cog):
                 # tijdelijke variable
                 embed_desc = None
                 new_number = None
+                message_by_bot = 0
 
                 try:
                     channel = self.client.get_channel(channel_id)
@@ -79,18 +80,20 @@ class EventsCounting(commands.Cog):
                         if message_inhoud == number + 1:
                             if post_embed == 1:
                                 await message.delete()
-                                await channel.send(f"**{message.author}**: {message_inhoud}")
+                                message_by_bot = await channel.send(f"**{message.author}**: {message_inhoud}")
                             else:
                                 if emote_react == 1:
                                     await message.add_reaction(emoji=settings.succes_emote)
 
-                            cursor.execute("SELECT user FROM userData WHERE user = %s AND guild = %s", (message.author.id, guild))
+                            cursor.execute("SELECT * FROM userData WHERE user = %s AND guild = %s", (message.author.id, guild))
                             user_data = cursor.fetchone()
 
                             if user_data is None:
                                 cursor.execute(settings.insert_userdata, (guild, message.author.id, 1))
+                                user_score = 1
                             else:
                                 cursor.execute(f"UPDATE userData SET count = count + 1 WHERE guild = %s AND user = %s", (guild, message.author.id))
+                                user_score = user_data[3] + 1
                             db.commit()
 
                             if maxcount == -1:
@@ -103,6 +106,71 @@ class EventsCounting(commands.Cog):
                                 number += 1
 
                             new_number = number
+
+                            cursor.execute("SELECT * FROM userNotify WHERE user = %s AND guild = %s", (message.author.id, guild))
+                            notifications = cursor.fetchall()
+
+                            for notification in notifications:
+                                try:
+                                    if notification[4] == 0 and notification[3] == number:
+                                        await message.author.send(f"**Automatic Notification:** The count is now on `{number}`.")
+                                    elif notification[4] == 1 and notification[3] % number == 0:
+                                        await message.author.send(f"**Automatic Notification:** The count is now on `{number}`.")
+                                except Exception:
+                                    pass
+
+                            cursor.execute("SELECT * FROM guildAutomation WHERE guild = %s", (guild,))
+                            automations = cursor.fetchall()
+
+                            for automation in automations:
+                                try:
+                                    event = automation[2]
+                                    action = automation[3]
+                                    am_number = automation[4]
+
+                                    doorgaan = True
+
+                                    if event == 1 and number == am_number:
+                                        pass
+                                    elif event == 2 and number % am_number == 0:
+                                        pass
+                                    elif event == 3 and str(number).startswith(str(am_number)):
+                                        pass
+                                    elif event == 4 and str(number).endswith(str(am_number)):
+                                        pass
+                                    elif event == 5 and user_score == am_number:
+                                        pass
+                                    else:
+                                        doorgaan = False
+
+                                    if doorgaan:
+                                        if action == 1:
+                                            role = get(message.guild.roles, id=automation[5])
+                                            await message.author.add_roles(role)
+                                        elif action == 2:
+                                            role = get(message.guild.roles, id=automation[5])
+                                            await message.author.remove_roles(role)
+                                        elif action == 3:
+                                            all_pins = await channel.pins()
+                                            if len(all_pins) >= 50:
+                                                oldest_pin = all_pins[-1]
+                                                old_pin = await message.channel.fetch_message(oldest_pin.id)
+                                                await old_pin.unpin(reason="Removed oldest pin because channel reached pin limit.")
+
+                                            if message_by_bot == 0:
+                                                await message.pin(reason="Automation Pin by iCount.")
+                                            else:
+                                                await message_by_bot.pin(reason="Automation Pin by iCount.")
+                                        elif action == 4:
+                                            am_channel = get(message.guild.channels, id=automation[5])
+                                            await am_channel.send(automation[6])
+                                        elif action == 5:
+                                            new_number = 0
+                                            embed_desc = "The count has been reset to 0."
+                                        elif action == 6:
+                                            await message.channel.set_permissions(message.guild.default_role, send_messages=False)
+                                except Exception:
+                                    pass
                         else:
                             if restart_error == 0:
                                 await message.delete()
@@ -115,7 +183,7 @@ class EventsCounting(commands.Cog):
                                         await message.add_reaction(emoji=settings.error_emote)
 
                                 new_number = 0
-                                embed_desc = "Wrong number! The count has now been reset to 0."
+                                embed_desc = "Wrong number! The count has been reset to 0."
                     except ValueError:
                         await message.delete()
 

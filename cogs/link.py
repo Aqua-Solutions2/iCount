@@ -13,7 +13,8 @@ class UnlinkCmd(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     @commands.cooldown(1, 10, commands.BucketType.user)
-    async def link(self, ctx):
+    async def link(self, ctx, channel: discord.TextChannel = None):
+        channel = channel or ctx.channel
         db = mysql.connector.connect(host=settings.host, user=settings.user,
                                      passwd=settings.passwd, database=settings.database)
         cursor = db.cursor()
@@ -21,7 +22,7 @@ class UnlinkCmd(commands.Cog):
         await ctx.channel.set_permissions(self.client.user, send_messages=True, read_messages=True, add_reactions=True,
                                           embed_links=True, manage_messages=True, read_message_history=True, external_emojis=True, manage_permissions=True)
 
-        cursor.execute("UPDATE guildSettings SET channelId = %s WHERE guild = %s", (ctx.channel.id, ctx.guild.id))
+        cursor.execute("UPDATE guildSettings SET channelId = %s WHERE guild = %s", (channel.id, ctx.guild.id))
         cursor.execute("DELETE FROM guildData WHERE guild = %s", (ctx.guild.id,))
         db.commit()
 
@@ -40,12 +41,18 @@ class UnlinkCmd(commands.Cog):
                                      passwd=settings.passwd, database=settings.database)
         cursor = db.cursor()
 
-        cursor.execute("UPDATE guildSettings SET channelId = 0 WHERE guild = %s", (ctx.guild.id,))
-        cursor.execute("DELETE FROM guildData WHERE guild = %s", (ctx.guild.id,))
-        db.commit()
-        db.close()
+        cursor.execute("SELECT channelId FROM guildSettings WHERE guild = %s", (ctx.guild.id,))
+        channel_id = cursor.fetchone()
 
-        await ctx.send(":white_check_mark: Unlink Successful.")
+        if channel_id is None or channel_id == 0:
+            await ctx.send(":x: No channel was linked.")
+        else:
+            cursor.execute("UPDATE guildSettings SET channelId = 0 WHERE guild = %s", (ctx.guild.id,))
+            cursor.execute("DELETE FROM guildData WHERE guild = %s", (ctx.guild.id,))
+            db.commit()
+
+            await ctx.send(":white_check_mark: Unlink Successful.")
+        db.close()
 
     @link.error
     @unlink.error

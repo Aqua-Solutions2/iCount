@@ -12,24 +12,24 @@ class Error:
         self.client = client
 
     # checking which error it is
-    def error_check(self):
+    async def error_check(self):
         if self.error is None:
             return
         elif self.ctx is None:
             raise self.error
         else:
             if isinstance(self.error, commands.CommandOnCooldown):
-                self.cooldown()
+                await self.cooldown()
             elif isinstance(self.error, commands.MemberNotFound):
-                self.member_not_found()
+                await self.member_not_found()
             elif isinstance(self.error, commands.MissingRequiredArgument):
-                self.arguments()
+                await self.arguments()
             elif isinstance(self.error, commands.ChannelNotFound):
-                self.channel_not_found()
+                await self.channel_not_found()
             elif isinstance(self.error, commands.RoleNotFound):
-                self.role_not_found()
+                await self.role_not_found()
             elif isinstance(self.error, commands.MissingPermissions) or isinstance(self.error, commands.BotMissingPermissions):
-                self.no_perms()
+                await self.no_perms()
             else:
                 raise self.error
 

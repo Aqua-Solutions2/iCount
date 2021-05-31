@@ -40,6 +40,7 @@ class Automation(commands.Cog):
 
     @commands.group(aliases=["am", "autom"])
     @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
     async def automation(self, ctx):
         if ctx.invoked_subcommand is None:
             events = ""

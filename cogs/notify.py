@@ -60,6 +60,10 @@ class Notify(commands.Cog):
                         await ctx.send(":x: Notifications for that number are already enabled.")
                         db.close()
                         return
+                elif each == 1 and number == row[3]:
+                    await ctx.send(":x: Notifications for that number are already enabled.")
+                    db.close()
+                    return
 
         cursor.execute(settings.insert_usernotify, user_notify_data)
         db.commit()

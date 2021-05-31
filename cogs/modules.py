@@ -11,10 +11,14 @@ class Modules(commands.Cog):
         self.client = client
 
     @commands.command(aliases=["modules"])
+    @commands.has_permissions(manage_guild=True)
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def module(self, ctx, module=None, state=None):
+        if module is not None:
+            module = module.lower()
+
         show_modules = False
-        modules_list = ["allow-spam", "count-fail", "emote-react", "recover", "embed"]
+        modules_list = ["allow-spam", "count-fail", "emote-react", "recover", "bot-message"]
         modules_db = ["allowSpam", "restartError", "emoteReact", "recoverMode", "postEmbed"]
 
         db = mysql.connector.connect(host=settings.host, user=settings.user,
@@ -51,6 +55,11 @@ class Modules(commands.Cog):
                     await ctx.send("Sorry but your server has 500+ members. Due to performance reasons you cannot enable `emote-react`.")
                     db.close()
                     return
+            elif module == "allow-spam":
+                if guild_modules[3] == 1 and state == 1:
+                    await ctx.send("You cannot enable `allow-spam` and `emote-react` at the same time because of the discord ratelimit.")
+                    db.close()
+                    return
 
             cursor.execute(f"UPDATE guildModules SET {modules_db[index]} = %s WHERE guild = %s", (state, ctx.guild.id))
             db.commit()
@@ -63,7 +72,11 @@ class Modules(commands.Cog):
             show_modules = True
 
         if show_modules:
-            modules_desc = ["Allow people to count multiple times in a row.", "Resets the count when someone fails to count the correct number.", "Reacts with an emote whenever a user counts.", "Remove invalid messages when the bot restarts.", "Repost the message in an embed."]
+            modules_desc = ["Allow people to count multiple times in a row.",
+                            "Resets the count when someone fails to count the correct number.",
+                            "Reacts with an emote whenever a user counts.",
+                            "Remove invalid messages when the bot restarts.",
+                            "Repost the message by the bot."]
 
             modules = ""
 

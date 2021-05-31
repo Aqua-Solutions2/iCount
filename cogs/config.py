@@ -13,6 +13,7 @@ class Config(commands.Cog):
 
     @commands.group(aliases=["conf", "settings"])
     @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
     async def config(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send(":x: Invalid arguments. Command usage: `config <option> <extra>`.\n\n"

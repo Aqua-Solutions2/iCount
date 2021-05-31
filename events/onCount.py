@@ -81,9 +81,12 @@ class EventsCounting(commands.Cog):
                             if post_embed == 1:
                                 await message.delete()
                                 message_by_bot = await channel.send(f"**{message.author}**: {message_inhoud}")
-                            else:
-                                if emote_react == 1:
+
+                            if emote_react == 1:
+                                if message_by_bot == 0:
                                     await message.add_reaction(emoji=settings.succes_emote)
+                                else:
+                                    await message_by_bot.add_reaction(emoji=settings.succes_emote)
 
                             cursor.execute("SELECT * FROM userData WHERE user = %s AND guild = %s", (message.author.id, guild))
                             user_data = cursor.fetchone()
@@ -177,10 +180,13 @@ class EventsCounting(commands.Cog):
                             else:
                                 if post_embed == 1:
                                     await message.delete()
-                                    await channel.send(f"**{message.author}**: {message_inhoud}")
-                                else:
-                                    if emote_react == 1:
+                                    message_by_bot = await channel.send(f"**{message.author}**: {message_inhoud}")
+
+                                if emote_react == 1:
+                                    if message_by_bot == 0:
                                         await message.add_reaction(emoji=settings.error_emote)
+                                    else:
+                                        await message_by_bot.add_reaction(emoji=settings.error_emote)
 
                                 new_number = 0
                                 embed_desc = "Wrong number! The count has been reset to 0."

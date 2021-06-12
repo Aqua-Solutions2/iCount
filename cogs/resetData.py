@@ -48,6 +48,9 @@ class ResetData(commands.Cog):
             embed.set_footer(text=settings.footer)
             await ctx.send(embed=embed)
             db.close()
+        else:
+            ctx.command.reset_cooldown(ctx)
+            raise commands.MissingPermissions([])
 
     @resetall.error
     async def resetall_error(self, ctx, error):

@@ -123,8 +123,8 @@ class CogsExport(commands.Cog):
             except Exception:
                 pass
         else:
-            await ctx.send(":x: You are not the owner of this guild.")
             ctx.command.reset_cooldown(ctx)
+            raise commands.MissingPermissions([])
 
     @export.error
     async def export_error(self, ctx, error):

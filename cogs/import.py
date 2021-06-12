@@ -146,6 +146,9 @@ class CogsImport(commands.Cog):
             await ctx.send(":white_check_mark: Imported all data.\n"
                            "*Some settings/data might not be imported correctly if you changed the file manually.*")
             db.close()
+        else:
+            ctx.command.reset_cooldown(ctx)
+            raise commands.MissingPermissions([])
 
     @import_cmd.error
     async def import_error(self, ctx, error):

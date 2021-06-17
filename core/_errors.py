@@ -30,7 +30,7 @@ class Error:
                 await self.role_not_found()
             elif isinstance(self.error, commands.MissingPermissions):
                 await self.no_perms("member")
-            elif isinstance(self.error, commands.BotMissingPermissions):
+            elif isinstance(self.error, commands.BotMissingPermissions) or isinstance(self.error, commands.CommandInvokeError):
                 await self.no_perms()
             else:
                 raise self.error

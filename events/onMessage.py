@@ -22,7 +22,9 @@ class EventsOnMessage(commands.Cog):
                 cursor.execute(insert_guildsettings, record)
                 db.commit()
 
-            if message.content == f"<@!{self.client.user.id}> prefix":
+            bericht = message.content.replace(" ", "")
+
+            if bericht == f"<@!{self.client.user.id}>prefix" or bericht == f"<@!{self.client.user.id}>":
                 db = mysql.connector.connect(host=host, user=user, passwd=passwd, database=database)
                 cursor = db.cursor()
 
@@ -34,8 +36,8 @@ class EventsOnMessage(commands.Cog):
                 else:
                     prefix = prefix_tuple[0]
 
-                await message.channel.send(f"De prefix van deze bot is `{prefix}`\n"
-                                           f"Wil je alle commands zien? Doe dan `{prefix}help`")
+                await message.channel.send(f"The prefix of the bot is `{prefix}`\n"
+                                           f"If you need help with the bot, please use `{prefix}help`")
             db.close()
 
 

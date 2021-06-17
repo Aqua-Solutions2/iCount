@@ -21,21 +21,24 @@ class CurrentCount(commands.Cog):
         cursor.execute(f"SELECT * FROM guildData WHERE guild = %s", (guild,))
         guild_data = cursor.fetchone()
 
-        user = self.client.get_user(guild_data[2])
-
-        if user is not None:
-            user_text = f"\nThe last user who typed was: {user}."
+        if guild_data is None:
+            await ctx.send(":x: No counting channel was linked!")
         else:
-            user_text = ""
+            user = self.client.get_user(guild_data[2])
 
-        embed = discord.Embed(
-            title=f"Current Count",
-            description=f"The Current count is: {guild_data[1]}{user_text}",
-            color=settings.embedcolor
-        )
-        embed.set_author(name=self.client.user.display_name, icon_url=self.client.user.avatar_url)
-        embed.set_footer(text=settings.footer)
-        await ctx.send(embed=embed)
+            if user is not None:
+                user_text = f"\nThe last user who typed was: {user}."
+            else:
+                user_text = ""
+
+            embed = discord.Embed(
+                title=f"Current Count",
+                description=f"The Current count is: {guild_data[1]}{user_text}",
+                color=settings.embedcolor
+            )
+            embed.set_author(name=self.client.user.display_name, icon_url=self.client.user.avatar_url)
+            embed.set_footer(text=settings.footer)
+            await ctx.send(embed=embed)
         db.close()
 
     @count.error

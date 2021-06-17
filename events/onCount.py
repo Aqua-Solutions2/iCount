@@ -63,8 +63,9 @@ class EventsCounting(commands.Cog):
 
                 if guild_data is None:
                     print(f"[ERROR] guild_data not found onCount.py (Guild: {message.guild}, ID: {guild})")
-                    db.close()
-                    return
+                    guild_data = (guild, 0, 0)
+                    cursor.execute(settings.insert_guilddata, guild_data)
+                    db.commit()
 
                 last_user = guild_data[2]
                 number = guild_data[1]

@@ -29,7 +29,7 @@ class Checks:
         if maxnumber == -1:
             maxnumber = self.max_number
 
-        if number < maxnumber:
+        if maxnumber > number > 0:
             return number
         else:
             return 0

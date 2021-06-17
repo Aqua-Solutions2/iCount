@@ -3,6 +3,7 @@ from discord.ext import commands
 import settings
 import mysql.connector
 from core._errors import Error
+from core import _checks as checks
 
 
 class Notify(commands.Cog):
@@ -13,12 +14,10 @@ class Notify(commands.Cog):
     @commands.command(aliases=["notifyme", "alert", "alertme"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def notify(self, ctx, number=None, parameter=None):
-        try:
-            number = int(number)
+        check = checks.Checks(ctx)
+        count = check.count(number, -1)
 
-            if number <= 0:
-                number = int("error")
-        except Exception:
+        if count == 0:
             await ctx.send(":x: You didn't give a valid number. `notify <number> [--each]`")
             return
 

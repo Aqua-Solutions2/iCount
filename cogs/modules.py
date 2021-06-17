@@ -18,8 +18,8 @@ class Modules(commands.Cog):
             module = module.lower()
 
         show_modules = False
-        modules_list = ["allow-spam", "count-fail", "emote-react", "recover", "bot-message"]
-        modules_db = ["allowSpam", "restartError", "emoteReact", "recoverMode", "postEmbed"]
+        modules_list = ["allow-spam", "count-fail", "emote-react", "bot-message"]
+        modules_db = ["allowSpam", "restartError", "emoteReact", "postEmbed"]
 
         db = mysql.connector.connect(host=settings.host, user=settings.user,
                                      passwd=settings.passwd, database=settings.database)

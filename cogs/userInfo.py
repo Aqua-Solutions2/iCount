@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import settings
 import mysql.connector
+from core._errors import Error
 
 
 class UserInfo(commands.Cog):
@@ -31,6 +32,11 @@ class UserInfo(commands.Cog):
             await ctx.send(f"**{member}** has counted {user_count} time in this server.")
         else:
             await ctx.send(f"**{member}** has counted {user_count} times in this server.")
+
+    @userinfo.error
+    async def userinfo_error(self, ctx, error):
+        error_class = Error(ctx, error, self.client)
+        await error_class.error_check()
 
 
 def setup(client):

@@ -3,7 +3,7 @@ iCount is a counting bot. It will help keep your server alive when it's not that
 
 ## Suggestions, bugs, feature requests
 
-Want to contribute? Great, we love that! Please take your time on opening a new issue.
+Want to contribute? Great, we love that! Please take your time on [opening a new issue](https://github.com/SiebeBaree/iCount/issues/new).
 
 ## How to use the bot?
 

@@ -12,6 +12,8 @@ class EventsGuildJoin(commands.Cog):
     async def on_guild_join(self, guild):
         print(f"[{settings.botname}] The bot was invited to {guild}.")
 
+        record = (guild.id, f"{settings.default_prefix}", 0, -1, 0, 0, "en")
+
         db = mysql.connector.connect(
             host=settings.host,
             database=settings.database,
@@ -20,7 +22,7 @@ class EventsGuildJoin(commands.Cog):
         )
         cursor = db.cursor()
         try:
-            cursor.execute(settings.insert_guildsettings, (f"{guild.id}", f"{settings.default_prefix}", 0, -1, 0, 0))
+            cursor.execute(settings.insert_guildsettings, record)
         except mysql.connector.errors.IntegrityError:
             cursor.execute("DELETE FROM guildSettings WHERE guild = %s", (guild.id,))
             cursor.execute("DELETE FROM guildData WHERE guild = %s", (guild.id,))
@@ -30,7 +32,7 @@ class EventsGuildJoin(commands.Cog):
             cursor.execute("DELETE FROM userAutomation WHERE guild = %s", (guild.id,))
             db.commit()
 
-            cursor.execute(settings.insert_guildsettings, (f"{guild.id}", f"{settings.default_prefix}", 0, -1, 0, 0, "en"))
+            cursor.execute(settings.insert_guildsettings, record)
         db.commit()
         db.close()
 

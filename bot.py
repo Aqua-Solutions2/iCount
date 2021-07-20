@@ -30,10 +30,19 @@ client.action_id = 0
 client.msg = "0"
 
 
+async def print_guilds():
+    await client.wait_until_ready()
+    while client.is_ready():
+        members = len(client.users)
+        print("Guilds:", len(client.guilds))
+        print("Users:", members)
+        await asyncio.sleep(3600)
+
+
 async def change_status():
     await client.wait_until_ready()
     while client.is_ready():
-        status = discord.Activity(name=f"{settings.default_prefix}help", type=discord.ActivityType.watching)
+        status = discord.Activity(name=f"{settings.default_prefix}help | {len(client.users)} Users", type=discord.ActivityType.watching)
         await client.change_presence(activity=status)
         await asyncio.sleep(300)
 
@@ -45,4 +54,5 @@ for folder in settings.folder_list:
             print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
 
 client.loop.create_task(change_status())
+client.loop.create_task(print_guilds())
 client.run(settings.token)

@@ -29,7 +29,7 @@ class Modules(commands.Cog):
         guild_modules = cursor.fetchone()
 
         if guild_modules is None:
-            guild_modules = (ctx.guild.id, 0, 0, 0, 0, 0)
+            guild_modules = (ctx.guild.id, 0, 0, 0, 0)
             cursor.execute(settings.insert_guildmodules, guild_modules)
 
         if module is None:
@@ -75,7 +75,6 @@ class Modules(commands.Cog):
             modules_desc = ["Allow people to count multiple times in a row.",
                             "Resets the count when someone fails to count the correct number.",
                             "Reacts with an emote whenever a user counts.",
-                            "Remove invalid messages when the bot restarts.",
                             "Repost the message by the bot."]
 
             modules = ""
@@ -87,7 +86,6 @@ class Modules(commands.Cog):
                         modules += f":black_circle: `{modules_list[index]}` {modules_desc[index]}\n"
                     else:
                         modules += f":radio_button: `{modules_list[index]}` {modules_desc[index]}\n"
-
                     index += 1
 
             embed = discord.Embed(

@@ -81,7 +81,7 @@ class CogsImport(commands.Cog):
             # Insert all data into database.
             cursor.execute(settings.insert_guildsettings, (ctx.guild.id, f"{prefix}", channel_id, maxcount, timeoutrole, 0, language))
             cursor.execute(settings.insert_guilddata, (ctx.guild.id, count, lastuser))
-            cursor.execute(settings.insert_guildmodules, (ctx.guild.id, modules[0], modules[1], modules[2], modules[3], modules[4]))
+            cursor.execute(settings.insert_guildmodules, (ctx.guild.id, modules[0], modules[1], modules[2], modules[3]))
             db.commit()
 
             for user in userdata:

@@ -82,10 +82,10 @@ class CogsExport(commands.Cog):
                     "message": automation[6]
                 }
 
-            try:
-                os.remove(f"data/exportdata/{ctx.guild.id}.json")
-            except Exception:
-                pass
+            # try:
+            #     os.remove(f"data/exportdata/{ctx.guild.id}.json")
+            # except Exception:
+            #     pass
 
             export_data = {
                 "guild-id": ctx.guild.id,
@@ -100,8 +100,7 @@ class CogsExport(commands.Cog):
                     "allow-spam": guild_modules[1],
                     "restart-error": guild_modules[2],
                     "emote-react": guild_modules[3],
-                    "recover-mode": guild_modules[4],
-                    "post-embed": guild_modules[5]
+                    "post-embed": guild_modules[4]
                 },
                 "userdata": user_data_dict,
                 "notifications": notifications_data,
@@ -118,18 +117,21 @@ class CogsExport(commands.Cog):
                 await ctx.send(":x: I cannot send a message to you. Please enable private messaging in the privacy settings of this server.")
                 ctx.command.reset_cooldown(ctx)
 
-            try:
-                os.remove(f"data/exportdata/{ctx.guild.id}.json")
-            except Exception:
-                pass
+            # try:
+            #     os.remove(f"data/exportdata/{ctx.guild.id}.json")
+            # except Exception:
+            #     pass
         else:
             ctx.command.reset_cooldown(ctx)
             raise commands.MissingPermissions([])
 
     @export.error
     async def export_error(self, ctx, error):
-        error_class = Error(ctx, error, self.client)
-        await error_class.error_check()
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("Sorry, this feature is not working yet.")
+        else:
+            error_class = Error(ctx, error, self.client)
+            await error_class.error_check()
 
 
 def setup(client):

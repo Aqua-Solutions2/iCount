@@ -41,14 +41,8 @@ async def change_status():
 for folder in settings.folder_list:
     for filename in os.listdir(f'./{folder}'):
         if filename.endswith('.py') and not filename.startswith('_'):
-            try:
-                client.load_extension(f'{folder}.{filename[:-3]}')
-                print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
-            except Exception as e:
-                if filename == "config.py":
-                    raise e
-                else:
-                    print(f"[{settings.botname}] {folder}.{filename[:-3]}: ERROR")
+            client.load_extension(f'{folder}.{filename[:-3]}')
+            print(f"[{settings.botname}] {folder}.{filename[:-3]}: OK")
 
 client.loop.create_task(change_status())
 client.run(settings.token)

@@ -56,7 +56,7 @@ class EventsCounting(commands.Cog):
                 allow_spam = guild_modules[1]
                 restart_error = guild_modules[2]
                 emote_react = guild_modules[3]
-                post_embed = guild_modules[5]
+                post_embed = guild_modules[4]
 
                 cursor.execute("SELECT * FROM guildData WHERE guild = %s", (guild,))
                 guild_data = cursor.fetchone()

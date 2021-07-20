@@ -17,7 +17,7 @@ folder_list = ["core", "events", "cogs"]
 
 insert_guildsettings = "INSERT INTO guildSettings (guild, prefix, channelId, maxCount, timeoutRole, proEnabled, language) VALUES (%s, %s, %s, %s, %s, %s, %s)"
 insert_guilddata = "INSERT INTO guildData (guild, currentCount, lastUser) VALUES (%s, %s, %s)"
-insert_guildmodules = "INSERT INTO guildModules (guild, allowSpam, restartError, emoteReact, recoverMode, postEmbed) VALUES (%s, %s, %s, %s, %s, %s)"
+insert_guildmodules = "INSERT INTO guildModules (guild, allowSpam, restartError, emoteReact, postEmbed) VALUES (%s, %s, %s, %s, %s)"
 insert_guildautomation = "INSERT INTO guildAutomation (guild, triggerNr, action, number, actionId, message) VALUES (%s, %s, %s, %s, %s, %s)"
 insert_usernotify = "INSERT INTO userNotify (guild, user, number, everyNumber) VALUES (%s, %s, %s, %s)"
 insert_userdata = "INSERT INTO userData (guild, user, count) VALUES (%s, %s, %s)"

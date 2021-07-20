@@ -19,8 +19,11 @@ class UnlinkCmd(commands.Cog):
                                      passwd=settings.passwd, database=settings.database)
         cursor = db.cursor()
 
-        await ctx.channel.set_permissions(self.client.user, send_messages=True, read_messages=True, add_reactions=True,
-                                          embed_links=True, manage_messages=True, read_message_history=True, external_emojis=True, manage_permissions=True)
+        try:
+            await ctx.channel.set_permissions(self.client.user, send_messages=True, read_messages=True, add_reactions=True,
+                                              embed_links=True, manage_messages=True, read_message_history=True, external_emojis=True, manage_permissions=True)
+        except Exception:
+            pass
 
         cursor.execute("UPDATE guildSettings SET channelId = %s WHERE guild = %s", (channel.id, ctx.guild.id))
         cursor.execute("DELETE FROM guildData WHERE guild = %s", (ctx.guild.id,))

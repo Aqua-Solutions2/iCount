@@ -1,3 +1,6 @@
+# CODE ARCHIVED
+**This project is no longer maintained. We are not going to upate this code anymore.**
+
 # iCount
 iCount is a counting bot. It will help keep your server alive when it's not that active anymore. It is also a nice minigame to have in your server.
 
